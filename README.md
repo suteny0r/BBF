@@ -31,6 +31,38 @@ often faster since most candidates fail well before the timeout.
 > the NAP to complete a connection, so a wrong assumed NAP doesn't
 > prevent `l2ping` from reaching the device once the UAP is correct.
 
+## Name resolution
+
+Any time `bbf` has a complete address (known UAP), whether that's a
+'ready to use' hit straight from the survey or one confirmed live by
+the sweep, it now also runs `hcitool name` against it and reports the
+result. This is a separate radio exchange from `l2ping`/paging, and it
+works even against addresses `bbf` itself never explicitly paged: a
+Remote_Name_Request doesn't require pairing/bonding, so any
+page-scannable device -- most devices, briefly, even ones in
+"non-discoverable" mode -- will typically answer one.
+
+```
+Resolving names for 2 known-UAP address(es) from the survey...
+  [survey] 00:00:be:b4:f1:3f -> Redmi Note 14 5G
+  [survey] 00:00:5c:06:3e:0f -> JBL TUNE BEAM
+```
+
+A `(no name response)` result is itself informative, not just a miss --
+it can mean the address is confirmed live but the stack is hardened
+against unauthenticated name disclosure (some newer stacks throttle or
+restrict this as a tracking mitigation), which may be exactly the kind
+of inconsistency you're auditing for.
+
+Use `--save FILE` to also append every resolved (or attempted) result
+to a TSV log as `timestamp<TAB>address<TAB>name<TAB>source`, where
+`source` is `survey` or `sweep` depending on how the UAP was known.
+The file is created if missing and only ever appended to, so repeated
+runs across different LAPs/sessions accumulate into one log. Use
+`--no-resolve-names` to skip name resolution entirely and get the old
+address-only behavior; `--name-timeout` (default 20s) bounds how long
+each `hcitool name` call can block, independent of `--pageto`.
+
 ## Legal / ethical use
 
 Only run this against devices you own or are explicitly authorized to
@@ -73,6 +105,7 @@ pip install -e ".[dev]"
 bbf [known_octets] [--prefix XX:XX] [--hcidev hci0]
     [--pageto SLOTS] [--no-pageto-override] [--no-retry]
     [--retries N] [--only BYTES] [--scan-time SECONDS]
+    [--save FILE] [--no-resolve-names] [--name-timeout SECONDS]
 ```
 
 | Option | Default | Meaning |
@@ -86,6 +119,9 @@ bbf [known_octets] [--prefix XX:XX] [--hcidev hci0]
 | `--retries` | `2` | Extra attempts per address during the recheck pass (so 3 total attempts by default). |
 | `--only` | *(none)* | Comma-separated hex byte(s) to test directly instead of sweeping `00..ff`, e.g. `5c` or `04,5c,a1`. |
 | `--scan-time` | *(prompted, 30s)* | `ubertooth-rx -t` duration for the interactive survey. Only used when `known_octets` is omitted. |
+| `--save` | *(none)* | Append `timestamp`, `address`, `name`, `source` (TSV) to this file for every known-UAP address resolved, from the survey or the sweep. Created if missing, never truncated. |
+| `--no-resolve-names` | off | Skip `hcitool name` resolution entirely; report addresses only (old behavior). |
+| `--name-timeout` | `20` | Subprocess-level timeout in seconds per `hcitool name` call, independent of `--pageto`. |
 
 ### Examples
 

@@ -72,9 +72,12 @@ mode, which some people rely on for privacy. Locating or fingerprinting
 someone else's device without consent may be illegal in your
 jurisdiction and is not the intended use of this tool.
 
+most Bluetooth devices are paired and set to non-discoverable, since general discovery scans are what most people/OSes turn off after initial setup, but non-discoverable only blocks scanning, not connections. L2CAP is connection-oriented and has no discovery mechanism of its own; l2ping/l2flood both call connect() directly and need only the LAP+UAP (NAP not needed, exact full BD_ADDR not needed) which what bbf + ubertooth does Therefore bbf makes flood tools easier against real targets.
+
 ## Requirements
 
 - Linux with BlueZ (`l2ping`, `hciconfig`) — `sudo apt install bluez`
+- Installed l2flood-emp-mode https://github.com/Ymsniper/l2flood/tree/emp-mode (already packaged with BBF) **original: https://github.com/kovmir/l2flood **
 - `sudo` privileges (both `l2ping` and `hciconfig pageto` need root)
 - A Bluetooth adapter, brought up (`hciconfig hci0 up`)
 - Optional, only for the survey front-end: an
@@ -88,6 +91,10 @@ git clone https://github.com/Ymsniper/BBF
 cd bbf
 pip install .
 # (pip install . --break-system-packages) if needed
+# optional for running DOS attack:
+cd l2flood-emp-mode
+make # Use `make serial` to build upstream l2ping.
+sudo make install
 ```
 
 This installs a `bbf` command. For local development, install in

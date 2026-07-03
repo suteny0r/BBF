@@ -197,6 +197,12 @@ pip install -e ".[dev]"
 pytest
 ```
 
+# CREDITS
+
+[@kovmir](https://github.com/kovmir) for l2flood
+[@Great Scott Gadgets](https://github.com/greatscottgadgets) for ubertooth
+
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

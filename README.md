@@ -1,4 +1,4 @@
-# bbf --- Bluetooth BD_ADDR UAP brute-forcer
+# bbf --- BD_ADDR(UAP) Brute-Forcer
 
 Brute-forces one unknown octet (the UAP) of a target's Bluetooth
 `BD_ADDR` by `l2ping`-ing every possible value, given a known LAP.

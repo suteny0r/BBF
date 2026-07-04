@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 from .args import parse_args
+from .banner import print_banner
 from .log import append_result
 from .resolve import resolve_name
 from .survey import (
@@ -77,6 +78,7 @@ def _resolve_target_via_survey(args):
 
 
 def main(argv=None):
+    print_banner()
     args = parse_args(argv)
 
     # Checked and authenticated up front, before the (possibly interactive,

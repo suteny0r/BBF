@@ -88,7 +88,7 @@ most Bluetooth devices are paired and set to non-discoverable, since general dis
 
 ```bash
 git clone https://github.com/Ymsniper/BBF
-cd bbf
+cd BBF
 pip install .
 # (pip install . --break-system-packages) if needed
 # optional for running DOS attack:

@@ -64,10 +64,10 @@ Kali Linux i686 system with two HCI adapters (hci0, hci1).
 
 ## Key observations
 
-- **EMP mode requires a power cycle to recover from.** After sustained
-  `-R` flooding, the K07 could not re-pair with the phone even after
-  l2flood was stopped. Both the speaker and the phone required a full
-  power cycle before normal Bluetooth operation resumed.
+- **Recovery after EMP mode does not require a power cycle.** After
+  sustained `-R` flooding, the phone was able to reconnect to the K07
+  once l2flood was stopped, without resetting either the speaker or the
+  phone.
 
 - **L2CAP echo requests go unanswered.** `l2ping` successfully
   establishes an ACL connection to the K07 but receives no echo
